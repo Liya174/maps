@@ -3,9 +3,7 @@ import style from "./Points.module.css";
 const Point = ({ pointInfo, deletePoint }) => {
   return (
     <div className={style.point}>
-      <p>
-        Lat:{pointInfo.lat}, lng:{pointInfo.lng}
-      </p>
+      <span>{pointInfo.address || `${pointInfo.lat} ${pointInfo.lng}`}</span>
       <button
         className={style.button}
         onClick={() => deletePoint(pointInfo.id)}
