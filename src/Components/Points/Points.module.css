@@ -1,0 +1,15 @@
+.points {
+  min-width: 300px;
+}
+
+.point {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #9c9c9c;
+  padding: 5px;
+}
+
+.button {
+  margin-left: 20px;
+}

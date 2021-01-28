@@ -1,0 +1,30 @@
+.map {
+  height: 400px;
+  width: 600px;
+  position: relative;
+}
+
+.search {
+  position: absolute;
+  max-width: 300px;
+  width: 100%;
+  top: 10px;
+  left: 40%;
+  z-index: 100;
+}
+/* 
+.input {
+  width: 100%;
+  padding: 5px;
+}
+
+.list {
+  padding: 0;
+  margin: 0;
+}
+
+.option {
+  padding: 5px;
+  background-color: #fff;
+  list-style: none;
+} */
