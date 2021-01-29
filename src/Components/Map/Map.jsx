@@ -1,48 +1,77 @@
+import React from "react";
 import {
-  withGoogleMap,
-  withScriptjs,
   GoogleMap,
+  LoadScript,
   Marker,
   Polyline,
-} from "react-google-maps";
-import { compose } from "redux";
-import Search from "./Search";
+  StandaloneSearchBox,
+} from "@react-google-maps/api";
+import style from "./Map.module.css";
 
 const Map = ({
-  map: { zoom, center, points },
+  map: {
+    zoom,
+    center,
+    points,
+    mapsSettings: { apiKey, libraries },
+    searchBoxValue,
+  },
   isMarkerShown,
   addNewPoint,
+  addNewPointFullInfo,
   changeSelectedPoint,
-  getAddressData,
+  setSearchBoxValue,
   ...props
 }) => {
-  const pointsCoordinates = points.map((point) => {
-    return {
-      lat: point.lat,
-      lng: point.lng,
+  const pointsCoordinates = points.map(({ lat, lng }) => ({ lat, lng }));
+
+  const getInfoFromSearchBox = () => {
+    const pointInfo = searchBoxValue.getPlaces()[0];
+    const pointMainInfo = {
+      lat: pointInfo.geometry.location.lat(),
+      lng: pointInfo.geometry.location.lng(),
+      address: pointInfo["formatted_address"],
     };
-  });
+    addNewPointFullInfo(pointMainInfo);
+  };
 
   return (
-    <GoogleMap
-      defaultZoom={zoom}
-      defaultCenter={{ lat: center.lat, lng: center.lng }}
-      onClick={(e) => addNewPoint(e.latLng.lat(), e.latLng.lng())}
-    >
-      <Search center={center} getAddressData={getAddressData} />
-      {points.map((point) => (
-        <Marker
-          position={{ lat: point.lat, lng: point.lng }}
-          key={point.id}
+    <LoadScript googleMapsApiKey={apiKey} libraries={libraries}>
+      <GoogleMap
+        zoom={zoom}
+        center={{ lat: center.lat, lng: center.lng }}
+        mapContainerStyle={{ height: "400px" }}
+        onClick={(e) => addNewPoint(e.latLng.lat(), e.latLng.lng())}
+      >
+        <StandaloneSearchBox
+          onLoad={(value) => setSearchBoxValue(value)}
+          onPlacesChanged={getInfoFromSearchBox}
+        >
+          <input
+            type="text"
+            placeholder="Найти точку"
+            className={style.input}
+          />
+        </StandaloneSearchBox>
+
+        {points.map((point) => (
+          <Marker
+            position={{ lat: point.lat, lng: point.lng }}
+            key={point.id}
+            draggable={true}
+            onDragEnd={(e) =>
+              changeSelectedPoint(point.id, e.latLng.lat(), e.latLng.lng())
+            }
+          />
+        ))}
+        <Polyline
+          path={pointsCoordinates}
+          options={{ strokeColor: "red" }}
           draggable={true}
-          onDragEnd={(e) =>
-            changeSelectedPoint(point.id, e.latLng.lat(), e.latLng.lng())
-          }
         />
-      ))}
-      <Polyline path={pointsCoordinates} strokeColor={"red"} draggable={true} />
-    </GoogleMap>
+      </GoogleMap>
+    </LoadScript>
   );
 };
 
-export default compose(withScriptjs, withGoogleMap)(Map);
+export default React.memo(Map);

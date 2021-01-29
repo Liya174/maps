@@ -1,14 +1,17 @@
-import { getAddressFromCoords, getCoordsFromAddress } from "../utils/geocoder";
+import { getAddressFromCoords } from "../utils/geocoder";
 
+//---------------CONSTS----------------------
 const GOOGLE_MAPS_API_KEY = "AIzaSyCPNQQYWWZfP_dAs-TCfcjM2RlTqIQulXk";
 const DELETE_POINT = "map/DELETE_POINT";
-const ADD_NEW_POINT_SUCCESS = "map/ADD_NEW_POINT_SUCCESS";
+const ADD_NEW_POINT_FULL_INFO = "map/ADD_NEW_POINT_FULL_INFO";
 const CHANGE_SELECTED_POINT_SUCCESS = "map/CHANGE_SELECTED_POINT_SUCCESS";
+const SET_SEARCH_BOX_VALUE = "map/SET_SEARCH_BOX_VALUE";
 
 //---------------INITIAL STATE----------------------
 const initialState = {
   mapsSettings: {
-    googleMapURL: `https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${GOOGLE_MAPS_API_KEY}`,
+    apiKey: GOOGLE_MAPS_API_KEY,
+    libraries: ["places"],
   },
   zoom: 14,
   center: {
@@ -16,12 +19,13 @@ const initialState = {
     lng: 60.653,
   },
   points: [],
+  searchBoxValue: null,
 };
 
 //---------------REDUCER----------------------
 const mapReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_NEW_POINT_SUCCESS: {
+    case ADD_NEW_POINT_FULL_INFO: {
       const newPoint = {
         id: state.points.length
           ? state.points[state.points.length - 1].id + 1
@@ -48,6 +52,12 @@ const mapReducer = (state = initialState, action) => {
       };
     }
 
+    case SET_SEARCH_BOX_VALUE:
+      return {
+        ...state,
+        searchBoxValue: action.searchBoxValue,
+      };
+
     case DELETE_POINT:
       return {
         ...state,
@@ -60,8 +70,8 @@ const mapReducer = (state = initialState, action) => {
 };
 
 //---------------ACTION_CREATORS----------------------
-export const addNewPointSuccess = (pointInfo) => ({
-  type: ADD_NEW_POINT_SUCCESS,
+export const addNewPointFullInfo = (pointInfo) => ({
+  type: ADD_NEW_POINT_FULL_INFO,
   pointInfo,
 });
 
@@ -75,15 +85,15 @@ export const changeSelectedPointSuccess = (pointInfo) => ({
   pointInfo,
 });
 
+export const setSearchBoxValue = (searchBoxValue) => ({
+  type: SET_SEARCH_BOX_VALUE,
+  searchBoxValue,
+});
+
 //--------------------THUNKS-----------------------------
 export const addNewPoint = (lat, lng) => async (dispatch) => {
   const address = await getAddressFromCoords(lat, lng, GOOGLE_MAPS_API_KEY);
-  dispatch(addNewPointSuccess({ lat, lng, address }));
-};
-
-export const getAddressData = (address) => async (dispatch) => {
-  const { lat, lng } = await getCoordsFromAddress(address, GOOGLE_MAPS_API_KEY);
-  dispatch(addNewPointSuccess({ lat, lng, address }));
+  dispatch(addNewPointFullInfo({ lat, lng, address }));
 };
 
 export const changeSelectedPoint = (id, lat, lng) => async (dispatch) => {

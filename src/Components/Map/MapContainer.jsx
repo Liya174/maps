@@ -3,7 +3,8 @@ import Map from "./Map";
 import {
   addNewPoint,
   changeSelectedPoint,
-  getAddressData,
+  addNewPointFullInfo,
+  setSearchBoxValue,
 } from "../../redux/mapReducer";
 import style from "./Map.module.css";
 
@@ -13,12 +14,9 @@ const MapContainer = (props) => {
       <Map
         map={props.map}
         addNewPoint={props.addNewPoint}
+        addNewPointFullInfo={props.addNewPointFullInfo}
         changeSelectedPoint={props.changeSelectedPoint}
-        getAddressData={props.getAddressData}
-        googleMapURL={props.map.mapsSettings.googleMapURL}
-        loadingElement={<div style={{ height: `100%` }} />}
-        containerElement={<div style={{ height: `400px` }} />}
-        mapElement={<div style={{ height: `100%` }} />}
+        setSearchBoxValue={props.setSearchBoxValue}
       />
     </div>
   );
@@ -31,5 +29,6 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   addNewPoint,
   changeSelectedPoint,
-  getAddressData,
+  addNewPointFullInfo,
+  setSearchBoxValue,
 })(MapContainer);

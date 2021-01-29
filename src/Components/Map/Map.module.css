@@ -12,6 +12,27 @@
   left: 40%;
   z-index: 100;
 }
+
+.input {
+  box-sizing: border-box;
+  width: 240px;
+  height: 32px;
+  left: 50%;
+  top: 10px;
+  padding: 0 12px;
+  outline: none;
+  text-overflow: ellipses;
+  position: absolute;
+  margin-left: -120px;
+  font-size: 14px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  border: 1px solid transparent;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+}
 /* 
 .input {
   width: 100%;
