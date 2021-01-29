@@ -12,11 +12,19 @@ const initialState = {
   mapsSettings: {
     apiKey: GOOGLE_MAPS_API_KEY,
     libraries: ["places"],
+    height: 400,
   },
   zoom: 14,
   center: {
     lat: 56.844,
     lng: 60.653,
+  },
+  //TODO: get bounds from current map
+  bounds: {
+    east: 60.67862046051024,
+    north: 56.85310574898769,
+    south: 56.786365589257706,
+    west: 60.50087464599413,
   },
   points: [],
   searchBoxValue: null,
@@ -26,18 +34,14 @@ const initialState = {
 const mapReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_NEW_POINT_FULL_INFO: {
-      const newPoint = {
-        id: state.points.length
-          ? state.points[state.points.length - 1].id + 1
-          : 0,
-        lat: action.pointInfo.lat,
-        lng: action.pointInfo.lng,
-        address: action.pointInfo.address,
-      };
-
+      const { lat, lng, address } = action.pointInfo;
+      const newPointId = state.points.length
+        ? state.points[state.points.length - 1].id + 1
+        : 0;
       return {
         ...state,
-        points: [...state.points, newPoint],
+        points: [...state.points, { id: newPointId, lat, lng, address }],
+        center: { lat, lng },
       };
     }
 
@@ -49,6 +53,7 @@ const mapReducer = (state = initialState, action) => {
         points: state.points.map((point) =>
           point.id === id ? { ...point, lat, lng, address } : point
         ),
+        center: { lat, lng },
       };
     }
 

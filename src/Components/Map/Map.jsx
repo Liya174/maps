@@ -12,8 +12,9 @@ const Map = ({
   map: {
     zoom,
     center,
+    bounds,
     points,
-    mapsSettings: { apiKey, libraries },
+    mapsSettings: { apiKey, libraries, height },
     searchBoxValue,
   },
   isMarkerShown,
@@ -34,18 +35,25 @@ const Map = ({
     };
     addNewPointFullInfo(pointMainInfo);
   };
+  console.log(props);
 
   return (
     <LoadScript googleMapsApiKey={apiKey} libraries={libraries}>
       <GoogleMap
         zoom={zoom}
         center={{ lat: center.lat, lng: center.lng }}
-        mapContainerStyle={{ height: "400px" }}
-        onClick={(e) => addNewPoint(e.latLng.lat(), e.latLng.lng())}
+        mapContainerStyle={{ height: `${height}px` }}
+        onClick={(e) => {
+          addNewPoint(e.latLng.lat(), e.latLng.lng());
+        }}
+        // onBoundsChanged={(e) =>}
       >
         <StandaloneSearchBox
-          onLoad={(value) => setSearchBoxValue(value)}
+          onLoad={(value) => {
+            setSearchBoxValue(value);
+          }}
           onPlacesChanged={getInfoFromSearchBox}
+          bounds={bounds}
         >
           <input
             type="text"

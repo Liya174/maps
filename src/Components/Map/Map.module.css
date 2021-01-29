@@ -23,7 +23,7 @@
   outline: none;
   text-overflow: ellipses;
   position: absolute;
-  margin-left: -120px;
+  margin-left: -50px;
   font-size: 14px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   border: 1px solid transparent;
@@ -33,19 +33,3 @@
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
 }
-/* 
-.input {
-  width: 100%;
-  padding: 5px;
-}
-
-.list {
-  padding: 0;
-  margin: 0;
-}
-
-.option {
-  padding: 5px;
-  background-color: #fff;
-  list-style: none;
-} */
