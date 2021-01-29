@@ -1,4 +1,5 @@
 import { getAddressFromCoords } from "../utils/geocoder";
+import update from "immutability-helper";
 
 //---------------CONSTS----------------------
 const GOOGLE_MAPS_API_KEY = "AIzaSyCPNQQYWWZfP_dAs-TCfcjM2RlTqIQulXk";
@@ -6,6 +7,7 @@ const DELETE_POINT = "map/DELETE_POINT";
 const ADD_NEW_POINT_FULL_INFO = "map/ADD_NEW_POINT_FULL_INFO";
 const CHANGE_SELECTED_POINT_SUCCESS = "map/CHANGE_SELECTED_POINT_SUCCESS";
 const SET_SEARCH_BOX_VALUE = "map/SET_SEARCH_BOX_VALUE";
+const MOVE_POINT = "map/MOVE_POINT";
 
 //---------------INITIAL STATE----------------------
 const initialState = {
@@ -34,13 +36,13 @@ const initialState = {
 const mapReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_NEW_POINT_FULL_INFO: {
-      const { lat, lng, address } = action.pointInfo;
+      const { lat, lng, address, name } = action.pointInfo;
       const newPointId = state.points.length
         ? state.points[state.points.length - 1].id + 1
         : 0;
       return {
         ...state,
-        points: [...state.points, { id: newPointId, lat, lng, address }],
+        points: [...state.points, { id: newPointId, lat, lng, address, name }],
         center: { lat, lng },
       };
     }
@@ -69,6 +71,24 @@ const mapReducer = (state = initialState, action) => {
         points: state.points.filter((point) => point.id !== action.pointId),
       };
 
+    case MOVE_POINT: {
+      const { dragIndex, hoverIndex } = action;
+      const dragCard = state.points[dragIndex];
+      const newPointsList = update(state.points, {
+        $splice: [
+          [dragIndex, 1],
+          [hoverIndex, 0, dragCard],
+        ],
+      });
+      console.log(state.points);
+      console.log("newPointsList: ", newPointsList);
+
+      return {
+        ...state,
+        points: newPointsList,
+      };
+    }
+
     default:
       return state;
   }
@@ -93,6 +113,12 @@ export const changeSelectedPointSuccess = (pointInfo) => ({
 export const setSearchBoxValue = (searchBoxValue) => ({
   type: SET_SEARCH_BOX_VALUE,
   searchBoxValue,
+});
+
+export const movePoint = (dragIndex, hoverIndex) => ({
+  type: MOVE_POINT,
+  dragIndex,
+  hoverIndex,
 });
 
 //--------------------THUNKS-----------------------------

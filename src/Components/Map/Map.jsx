@@ -27,15 +27,15 @@ const Map = ({
   const pointsCoordinates = points.map(({ lat, lng }) => ({ lat, lng }));
 
   const getInfoFromSearchBox = () => {
-    const pointInfo = searchBoxValue.getPlaces()[0];
-    const pointMainInfo = {
-      lat: pointInfo.geometry.location.lat(),
-      lng: pointInfo.geometry.location.lng(),
-      address: pointInfo["formatted_address"],
-    };
-    addNewPointFullInfo(pointMainInfo);
+    const {
+      name,
+      geometry: {
+        location: { lat, lng },
+      },
+      formatted_address: address,
+    } = searchBoxValue.getPlaces()[0];
+    addNewPointFullInfo({ lat: lat(), lng: lng(), address, name });
   };
-  console.log(props);
 
   return (
     <LoadScript googleMapsApiKey={apiKey} libraries={libraries}>
@@ -72,11 +72,7 @@ const Map = ({
             }
           />
         ))}
-        <Polyline
-          path={pointsCoordinates}
-          options={{ strokeColor: "red" }}
-          draggable={true}
-        />
+        <Polyline path={pointsCoordinates} options={{ strokeColor: "red" }} />
       </GoogleMap>
     </LoadScript>
   );

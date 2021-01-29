@@ -11,6 +11,10 @@
   background-color: #ffffff;
   padding: 5px;
   cursor: grab;
+  opacity: 1;
+}
+.druggingPoint {
+  opacity: 0;
 }
 
 .address {
