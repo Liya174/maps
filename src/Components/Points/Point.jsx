@@ -54,6 +54,7 @@ const Point = ({ point, index, deletePoint, movePoint }) => {
       ref={ref}
       className={`${style.point} ${isDragging ? style.druggingPoint : ""}`}
       draggable={true}
+      data-testid={"point"}
     >
       <span className={style.address}>
         <strong>{point.name ? `${point.name}, ` : ""}</strong>

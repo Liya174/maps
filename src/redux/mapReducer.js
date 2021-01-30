@@ -2,15 +2,16 @@ import { getAddressFromCoords } from "../utils/geocoder";
 import update from "immutability-helper";
 
 //---------------CONSTS----------------------
-const GOOGLE_MAPS_API_KEY = "AIzaSyCPNQQYWWZfP_dAs-TCfcjM2RlTqIQulXk";
-const DELETE_POINT = "map/DELETE_POINT";
-const ADD_NEW_POINT_FULL_INFO = "map/ADD_NEW_POINT_FULL_INFO";
-const CHANGE_SELECTED_POINT_SUCCESS = "map/CHANGE_SELECTED_POINT_SUCCESS";
-const SET_SEARCH_BOX_VALUE = "map/SET_SEARCH_BOX_VALUE";
-const MOVE_POINT = "map/MOVE_POINT";
+export const GOOGLE_MAPS_API_KEY = "AIzaSyCPNQQYWWZfP_dAs-TCfcjM2RlTqIQulXk";
+export const DELETE_POINT = "map/DELETE_POINT";
+export const ADD_NEW_POINT_FULL_INFO = "map/ADD_NEW_POINT_FULL_INFO";
+export const CHANGE_SELECTED_POINT_SUCCESS =
+  "map/CHANGE_SELECTED_POINT_SUCCESS";
+export const SET_SEARCH_BOX_VALUE = "map/SET_SEARCH_BOX_VALUE";
+export const MOVE_POINT = "map/MOVE_POINT";
 
 //---------------INITIAL STATE----------------------
-const initialState = {
+export const initialState = {
   mapsSettings: {
     apiKey: GOOGLE_MAPS_API_KEY,
     libraries: ["places"],
@@ -37,12 +38,11 @@ const mapReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_NEW_POINT_FULL_INFO: {
       const { lat, lng, address, name } = action.pointInfo;
-      const newPointId = state.points.length
-        ? state.points[state.points.length - 1].id + 1
-        : 0;
+      const id = (+new Date()).toString(32);
+
       return {
         ...state,
-        points: [...state.points, { id: newPointId, lat, lng, address, name }],
+        points: [...state.points, { id, lat, lng, address, name }],
         center: { lat, lng },
       };
     }
@@ -80,8 +80,6 @@ const mapReducer = (state = initialState, action) => {
           [hoverIndex, 0, dragCard],
         ],
       });
-      console.log(state.points);
-      console.log("newPointsList: ", newPointsList);
 
       return {
         ...state,
