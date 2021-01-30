@@ -1,5 +1,5 @@
-import React from "react";
-// import { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useEffect } from "react";
 import {
   GoogleMap,
   LoadScript,
@@ -23,15 +23,24 @@ const Map = ({
   changeSelectedPoint,
   setSearchBoxValue,
 }) => {
-  const markersLatLng = points.map(({ lat, lng }) => ({ lat, lng }));
+  // локальный стейт для привзяки координат polyline к маркерам
+  const [markersLatLng, setMarkersLatLng] = useState([]);
+  useEffect(() => {
+    const list = points.map(({ id, lat, lng }) => ({ id, lat, lng }));
+    setMarkersLatLng(list);
+  }, [points]);
 
-  // локальный стейт для привзяки координат polyline при движении маркера
-  // const [markersLatLng, setMarkersLatLng] = useState([]);
-  // useEffect(() => {
-  //   const list = points.map(({ id, lat, lng }) => ({ id, lat, lng }));
-  //   setMarkersLatLng(list);
-  // }, [points]);
+  // запись координат маркера (при движении) в локальный стейт
+  const changeMarkerCoordinates = (e, index) => {
+    const newMarkersLatLng = [...markersLatLng];
+    newMarkersLatLng[index] = {
+      lat: e.latLng.lat(),
+      lng: e.latLng.lng(),
+    };
+    setMarkersLatLng(newMarkersLatLng);
+  };
 
+  //извлечение адреса из seachbox и добавление в стейт
   const getInfoFromSearchBox = () => {
     const {
       name,
@@ -48,13 +57,11 @@ const Map = ({
       <LoadScript googleMapsApiKey={apiKey} libraries={libraries}>
         <GoogleMap
           zoom={zoom}
-          center={{ lat: center.lat, lng: center.lng }}
+          center={{ ...center }}
           mapContainerStyle={{ height: `${height}px` }}
           onClick={(e) => {
             addNewPoint(e.latLng.lat(), e.latLng.lng());
           }}
-
-          // onBoundsChanged={(e) =>}
         >
           <StandaloneSearchBox
             onLoad={(value) => {
@@ -70,25 +77,22 @@ const Map = ({
             />
           </StandaloneSearchBox>
 
-          {points.map((point, index) => (
-            <Marker
-              position={{ lat: point.lat, lng: point.lng }}
-              key={point.id}
-              draggable={true}
-              // при движении маркера его актуальные координаты записываются в локальный стейт
-              // onDrag={(e) => {
-              //   const newMarkersLatLng = [...markersLatLng];
-              //   newMarkersLatLng[index] = {
-              //     lat: e.latLng.lat(),
-              //     lng: e.latLng.lng(),
-              //   };
-              //   setMarkersLatLng(newMarkersLatLng);
-              // }}
-              onDragEnd={(e) => {
-                changeSelectedPoint(point.id, e.latLng.lat(), e.latLng.lng());
-              }}
-            />
-          ))}
+          {points &&
+            points.map(({ lat, lng, id }, index) => (
+              <Marker
+                position={{
+                  lat: markersLatLng[index] ? markersLatLng[index].lat : lat,
+                  lng: markersLatLng[index] ? markersLatLng[index].lng : lng,
+                }}
+                key={id}
+                draggable={true}
+                onDrag={(e) => changeMarkerCoordinates(e, index)}
+                onDragEnd={(e) => {
+                  changeSelectedPoint(id, e.latLng.lat(), e.latLng.lng());
+                }}
+              />
+            ))}
+
           <Polyline path={markersLatLng} options={{ strokeColor: "red" }} />
         </GoogleMap>
       </LoadScript>

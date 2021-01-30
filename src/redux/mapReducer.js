@@ -17,17 +17,16 @@ export const initialState = {
     libraries: ["places"],
     height: 400,
   },
-  zoom: 14,
+  zoom: 13,
   center: {
     lat: 56.844,
     lng: 60.653,
   },
-  //TODO: get bounds from current map
   bounds: {
-    east: 60.67862046051024,
-    north: 56.85310574898769,
-    south: 56.786365589257706,
-    west: 60.50087464599413,
+    east: 60.8,
+    north: 56.9,
+    south: 56.7,
+    west: 60.5,
   },
   points: [],
   searchBoxValue: null,

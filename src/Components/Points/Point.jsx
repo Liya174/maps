@@ -4,7 +4,7 @@ import ITEM_TYPE from "./data/types";
 import style from "./Points.module.css";
 
 const Point = ({ point, index, deletePoint, movePoint }) => {
-  const id = point.id;
+  const { id, name, address, lat, lng } = point;
   //drag&drop элементов
   const ref = useRef(null);
   const [, drop] = useDrop({
@@ -57,10 +57,10 @@ const Point = ({ point, index, deletePoint, movePoint }) => {
       data-testid={"point"}
     >
       <span className={style.address}>
-        <strong>{point.name ? `${point.name}, ` : ""}</strong>
-        {point.address || `${point.lat} ${point.lng}`}
+        <strong>{name ? `${name}, ` : ""}</strong>
+        {address || `${lat} ${lng}`}
       </span>
-      <button className={style.button} onClick={() => deletePoint(point.id)}>
+      <button className={style.button} onClick={() => deletePoint(id)}>
         Удалить
       </button>
     </div>
